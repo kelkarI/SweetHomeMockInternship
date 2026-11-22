@@ -2004,10 +2004,38 @@ public class PlanComponent extends JComponent implements PlanView, Scrollable, P
   }
   
   /**
-   * Prints this component plan at the scale given in the home print attributes or at a scale 
-   * that makes it fill <code>pageFormat</code> imageable size if this attribute is <code>null</code>.
+   * Prints one fitted plan page for each viewable level, in home level order.
+   * The selected level is restored even if rendering fails.
    */
   public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
+    if (pageIndex < 0) {
+      return NO_SUCH_PAGE;
+    }
+    List<Level> printedLevels = new ArrayList<Level>();
+    for (Level level : this.home.getLevels()) {
+      if (level.isViewable()) {
+        printedLevels.add(level);
+      }
+    }
+    if (this.home.getLevels().isEmpty()) {
+      return pageIndex == 0 ? printSelectedLevel(g, pageFormat) : NO_SUCH_PAGE;
+    }
+    if (pageIndex >= printedLevels.size()) {
+      return NO_SUCH_PAGE;
+    }
+    Level selectedLevel = this.home.getSelectedLevel();
+    try {
+      this.home.setSelectedLevel(printedLevels.get(pageIndex));
+      // Even an empty viewable level has its own plan page.
+      printSelectedLevel(g, pageFormat);
+      return PAGE_EXISTS;
+    } finally {
+      this.home.setSelectedLevel(selectedLevel);
+    }
+  }
+
+  /** Prints a single level, fitting its plan onto one page. */
+  private int printSelectedLevel(Graphics g, PageFormat pageFormat) {
     List<Selectable> printedItems = getPaintedItems(); 
     Rectangle2D printedItemBounds = getItemsBounds(g, printedItems);
     if (printedItemBounds != null) {
@@ -2015,39 +2043,12 @@ public class PlanComponent extends JComponent implements PlanView, Scrollable, P
       double imageableY = pageFormat.getImageableY();
       double imageableWidth = pageFormat.getImageableWidth();
       double imageableHeight = pageFormat.getImageableHeight();
-      float printScale;
-      float rowIndex;
-      float columnIndex;
-      int pagesPerRow;
-      int pagesPerColumn;
-      if (this.home.getPrint() == null || this.home.getPrint().getPlanScale() == null) {
-        // Compute a scale that ensures the plan will fill the component if plan scale is null
-        printScale = getPrintPreferredScale(g, pageFormat) * LengthUnit.centimeterToInch(72);
-        if (pageIndex > 0) {
-          return NO_SUCH_PAGE;
-        }
-        pagesPerRow = 1;
-        pagesPerColumn = 1;
-        rowIndex   = 0;
-        columnIndex = 0;
-      } else {
-        // Apply print scale to paper size expressed in 1/72nds of an inch
-        printScale = this.home.getPrint().getPlanScale().floatValue() * LengthUnit.centimeterToInch(72);
-        pagesPerRow = (int)(printedItemBounds.getWidth() * printScale / imageableWidth);
-        if (printedItemBounds.getWidth() * printScale != imageableWidth) {
-          pagesPerRow++;
-        }
-        pagesPerColumn = (int)(printedItemBounds.getHeight() * printScale / imageableHeight);
-        if (printedItemBounds.getHeight() * printScale != imageableHeight) {
-          pagesPerColumn++;
-        }
-        if (pageIndex >= pagesPerRow * pagesPerColumn) {
-          return NO_SUCH_PAGE;
-        }
-        rowIndex = pageIndex / pagesPerRow;
-        columnIndex = pageIndex - rowIndex * pagesPerRow;
-      }
-          
+      float printScale = getPrintPreferredScale(g, pageFormat) * LengthUnit.centimeterToInch(72);
+      int pagesPerRow = 1;
+      int pagesPerColumn = 1;
+      int rowIndex = 0;
+      int columnIndex = 0;
+
       Graphics2D g2D = (Graphics2D)g.create();
       g2D.clip(new Rectangle2D.Double(imageableX, imageableY, imageableWidth, imageableHeight));
       // Change coordinates system to paper imageable origin
@@ -2066,9 +2067,10 @@ public class PlanComponent extends JComponent implements PlanView, Scrollable, P
         // Print component contents
         paintContent(g2D, printScale, PaintMode.PRINT);
       } catch (InterruptedIOException ex) {
-        // Ignore exception because it may happen only in EXPORT paint mode 
-      }   
-      g2D.dispose();
+        // Ignore exception because it may happen only in EXPORT paint mode
+      } finally {
+        g2D.dispose();
+      }
       return PAGE_EXISTS;
     } else {
       return NO_SUCH_PAGE;
@@ -2103,9 +2105,10 @@ public class PlanComponent extends JComponent implements PlanView, Scrollable, P
         // Paint component contents
         paintContent(g2D, clipboardScale, PaintMode.CLIPBOARD);
       } catch (InterruptedIOException ex) {
-        // Ignore exception because it may happen only in EXPORT paint mode 
-      }   
-      g2D.dispose();
+        // Ignore exception because it may happen only in EXPORT paint mode
+      } finally {
+        g2D.dispose();
+      }
       return image;
     }
   }
