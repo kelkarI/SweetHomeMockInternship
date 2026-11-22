@@ -1,0 +1,13 @@
+November 22, 2026
+Java: Azul Zulu OpenJDK 8, macOS ARM64
+Maven: 3.9.16
+
+Starter package build: PASS
+Starter BuildSmokeTest: PASS
+Final clean test: 6 tests, 0 failures, 0 errors
+Submission structure: PASS
+GUI acceptance program: GUI_ACCEPTANCE_PASS
+PDF: 4 pages, all-level table with Level column and one plan per viewable level
+Visual review: PASS
+
+PNG files were rendered directly from the actual running Java windows with Window.printAll, rather than from unrelated screen pixels. Native macOS title bars and the global menu are not included. See AI_USAGE.md and tools/README.md for details.
