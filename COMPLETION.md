@@ -21,7 +21,7 @@ Create one GitHub Issue for each of Tasks 2-4 using the supplied template. Link 
 - Recommended deadline shown on MarkUs: October 25, 2026, 11:59 p.m. Toronto time (extended from October 23).
 - Final deadline shown on both Quercus and MarkUs: **November 20, 2026, 6 p.m. EST**.
 
-The required `github.com.markusurl` file was submitted to MarkUs on November 22, 2026, at 4:39:01 p.m. EST. MarkUs confirmed that all required files were submitted, and the displayed file contents point to the correct fork. The server explicitly warns that changes after the deadline are recorded but not graded. No instructor-approved exception has been verified. A MarkUs self-test run was requested after submission; consult MarkUs for its result.
+The required `github.com.markusurl` file was submitted to MarkUs on November 22, 2026, at 4:39:01 p.m. EST. MarkUs confirmed that all required files were submitted, and the displayed file contents point to the correct fork. The server explicitly warns that changes after the deadline are recorded but not graded. No instructor-approved exception has been verified. Two MarkUs self-test runs completed after submission. Both show 3/3 for GitHub Issues, 8/8 for file-existence/evidence checks, and 6/6 for Maven tests (17/17 available marks). A separate zero-point `test_repo_download` diagnostic remains flagged as failed. No detailed error was exposed in the result UI. An independent fresh public clone of the submitted fork succeeded at the current commit; the cause of the server diagnostic has not been established.
 
 ## How the implementation works
 
@@ -36,6 +36,7 @@ The required `github.com.markusurl` file was submitted to MarkUs on November 22,
 - Starter `mvn -Dtest=BuildSmokeTest test`: passed.
 - Final `mvn clean test`: passed, all six provided tests.
 - `python3 test_submission.py`: passed.
+- MarkUs self-tests: 17/17 scored marks on two runs; a zero-point checkout diagnostic remains flagged as described above.
 - Live GUI checks: catalog and resized furniture volumes; enabled menu controls and tooltip resources; working display toggles; restrictive furniture-filter restoration; table column/filter/grid restoration after an injected print failure; description editing and persistence; Volume column; ascending and descending row order; main/context sort and display entries; four-page sample PDF; selected-level and screen-column restoration; hidden-level page mapping; negative/out-of-range pages; selected-level restoration after rendering failure.
 - Visual review: the PNGs show the running application and actual controls; the PDF shows all three levels in the furniture table and three distinct plan pages. The sample and provided tests remain unchanged.
 

@@ -18,3 +18,10 @@ All 4 menu controls enabled, tooltip resources present, display action toggles c
 Restricted furniture filter restored after PDF printing: PASS
 Table column model, filter and grid color restored after injected print failure: PASS
 Three closed linked GitHub Issues: verified
+
+MarkUs URL submitted: November 22, 2026, 4:39:01 p.m. EST
+MarkUs: all required files submitted; correct fork URL verified
+MarkUs scored checks: Issues 3/3, file/evidence checks 8/8, Maven 6/6 (17/17)
+Unscored diagnostic: test_repo_download failed on two runs; cause not exposed
+Independent fresh public clone of submitted fork: PASS
+Late-submission notice: changes recorded but not graded
