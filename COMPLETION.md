@@ -21,7 +21,7 @@ Create one GitHub Issue for each of Tasks 2-4 using the supplied template. Link 
 - Recommended deadline shown on MarkUs: October 25, 2026, 11:59 p.m. Toronto time (extended from October 23).
 - Final deadline shown on both Quercus and MarkUs: **November 20, 2026, 6 p.m. EST**.
 
-Work was completed on November 22, after the published final deadline. No extension or acceptance of late work has been verified. MarkUs showed no submitted files when inspected. No final MarkUs submission was made by the assistant. The browser connection later became unavailable, so current submission controls and self-test availability could not be checked.
+The required `github.com.markusurl` file was submitted to MarkUs on November 22, 2026, at 4:39:01 p.m. EST. MarkUs confirmed that all required files were submitted, and the displayed file contents point to the correct fork. The server explicitly warns that changes after the deadline are recorded but not graded. No instructor-approved exception has been verified. A MarkUs self-test run was requested after submission; consult MarkUs for its result.
 
 ## How the implementation works
 
