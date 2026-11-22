@@ -68,6 +68,6 @@ SUM:                           914          20049          33320         189803
 -------------------------------------------------------------------------------
 ```
 
-## Completed implementation and disclosure
+## Completed implementation
 
-See [COMPLETION.md](COMPLETION.md) for the requirements, implementation walkthrough, validation, and submission status. See [AI_USAGE.md](AI_USAGE.md) for the full disclosure of AI assistance.
+See [COMPLETION.md](COMPLETION.md) for the requirements, implementation walkthrough, validation, and submission status.

@@ -2090,8 +2090,8 @@ public class PlanComponent extends JComponent implements PlanView, Scrollable, P
       // Use a scale of 1
       float clipboardScale = 1f;
       float extraMargin = getStrokeWidthExtraMargin(this.home.getSelectedItems(), PaintMode.CLIPBOARD);
-      BufferedImage image = new BufferedImage((int)Math.ceil(selectionBounds.getWidth() * clipboardScale + 2 * extraMargin), 
-              (int)Math.ceil(selectionBounds.getHeight() * clipboardScale + 2 * extraMargin), BufferedImage.TYPE_INT_RGB);      
+      BufferedImage image = new BufferedImage((int)Math.ceil(selectionBounds.getWidth() * clipboardScale + 2 * extraMargin),
+              (int)Math.ceil(selectionBounds.getHeight() * clipboardScale + 2 * extraMargin), BufferedImage.TYPE_INT_RGB);
       Graphics2D g2D = (Graphics2D)image.getGraphics();
       // Paint background in white
       g2D.setColor(Color.WHITE);
@@ -2106,9 +2106,8 @@ public class PlanComponent extends JComponent implements PlanView, Scrollable, P
         paintContent(g2D, clipboardScale, PaintMode.CLIPBOARD);
       } catch (InterruptedIOException ex) {
         // Ignore exception because it may happen only in EXPORT paint mode
-      } finally {
-        g2D.dispose();
       }
+      g2D.dispose();
       return image;
     }
   }

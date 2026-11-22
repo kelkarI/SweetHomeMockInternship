@@ -110,6 +110,11 @@ public class CaptureAcceptanceEvidence extends SweetHome3D {
   private void verify() throws Exception {
 
     ready();
+    CatalogPieceOfFurniture catalogProbe = new CatalogPieceOfFurniture("Volume check",null,null,2,3,4,true,false);
+    check(catalogProbe.getVolume()==24f,"Catalog volume uses width x depth x height");
+    HomePieceOfFurniture homeProbe = new HomePieceOfFurniture(catalogProbe);
+    homeProbe.setWidth(5); homeProbe.setDepth(6); homeProbe.setHeight(7);
+    check(homeProbe.getVolume()==210f,"Volume follows changed dimensions without stale state");
     edt(() -> frame.setBounds(20, 40, 1250, 850));
     capture("task1-running.png");
     System.out.println("PASS: whole running application captured");
@@ -202,6 +207,20 @@ public class CaptureAcceptanceEvidence extends SweetHome3D {
     JMenuBar bar = frame.getJMenuBar();
     check(hasMenuItem(bar, "Volume") >= 2, "Volume appears in Furniture sort and display menus");
     check(hasMenuItem(popup, "Volume") >= 2, "Volume appears in context sort and display menus");
+    edt(() -> {
+      verifyVolumeControls(bar);
+      verifyVolumeControls(popup);
+      for (HomeView.ActionType type : new HomeView.ActionType[]{HomeView.ActionType.SORT_HOME_FURNITURE_BY_VOLUME,HomeView.ActionType.DISPLAY_HOME_FURNITURE_VOLUME}) {
+        Action control = ((JComponent)controller.getView()).getActionMap().get(type);
+        check(control!=null && control.getValue(Action.SHORT_DESCRIPTION)!=null,"Volume action has English tooltip text");
+      }
+      Action display = ((JComponent)controller.getView()).getActionMap().get(HomeView.ActionType.DISPLAY_HOME_FURNITURE_VOLUME);
+      check(display!=null,"Volume display action is wired");
+      display.actionPerformed(new java.awt.event.ActionEvent(table,0,"verify"));
+      check(!home.getFurnitureVisibleProperties().contains(HomePieceOfFurniture.SortableProperty.VOLUME),"Display action hides Volume");
+      display.actionPerformed(new java.awt.event.ActionEvent(table,0,"verify"));
+      check(home.getFurnitureVisibleProperties().contains(HomePieceOfFurniture.SortableProperty.VOLUME),"Display action restores Volume");
+    });
 
     java.util.List<HomePieceOfFurniture.SortableProperty> originalColumns = new ArrayList<>(home.getFurnitureVisibleProperties());
     Level selected = home.getLevels().get(2);
@@ -217,7 +236,13 @@ public class CaptureAcceptanceEvidence extends SweetHome3D {
         }
       } catch (Exception ex) { throw new RuntimeException(ex); }
     });
+    FurnitureTable.FurnitureFilter screenFilter = (h,furniture) -> furniture.isAtLevel(selected);
+    edt(() -> table.setFurnitureFilter(screenFilter));
+    int filteredRows = table.getRowCount();
+    javax.swing.table.TableColumnModel screenColumns = table.getColumnModel();
     ((HomePane)controller.getView()).printToPDF(new File(root,"submissions/task4-all-levels.pdf").getAbsolutePath());
+    check(table.getFurnitureFilter()==screenFilter && table.getRowCount()==filteredRows,"Printing restores a restrictive on-screen furniture filter");
+    check(table.getColumnModel()==screenColumns,"Printing restores the exact on-screen column model");
     check(home.getSelectedLevel()==selected, "PDF printing restored the selected level");
     check(home.getFurnitureVisibleProperties().equals(originalColumns), "Printing preserved on-screen columns");
     PdfReader pdf = new PdfReader(new File(root,"submissions/task4-all-levels.pdf").getAbsolutePath());
@@ -243,6 +268,25 @@ public class CaptureAcceptanceEvidence extends SweetHome3D {
         try { plan.print(null,format,0); throw new AssertionError("Expected rendering failure"); }
         catch (NullPointerException expected) { check(probe.getSelectedLevel()==original,"Selection restored on rendering failure"); }
       } finally { graphics.dispose(); }
+      FurnitureTable failingTable = new FurnitureTable(probe,getUserPreferences()) {
+        @Override
+        public java.awt.print.Printable getPrintable(JTable.PrintMode mode,java.text.MessageFormat header,java.text.MessageFormat footer) {
+          return (g,p,index) -> { throw new java.awt.print.PrinterException("Expected verification failure"); };
+        }
+      };
+      javax.swing.table.TableColumnModel before = failingTable.getColumnModel();
+      FurnitureTable.FurnitureFilter filter = (h,furniture) -> true;
+      failingTable.setFurnitureFilter(filter);
+      Color grid = failingTable.getGridColor();
+      Graphics2D printGraphics = new BufferedImage(800,1000,BufferedImage.TYPE_INT_RGB).createGraphics();
+      try {
+        failingTable.print(printGraphics,format,0);
+        throw new AssertionError("Expected table printing failure");
+      } catch (java.awt.print.PrinterException expected) {
+        check(failingTable.getColumnModel()==before,"Table columns restored on printing failure");
+        check(failingTable.getFurnitureFilter()==filter,"Table filter restored on printing failure");
+        check(failingTable.getGridColor().equals(grid),"Table grid color restored on printing failure");
+      } finally { printGraphics.dispose(); }
     });
   }
   private void verifySorted(FurnitureTable table, boolean descending) {
@@ -251,6 +295,18 @@ public class CaptureAcceptanceEvidence extends SweetHome3D {
       float volume = ((HomePieceOfFurniture)table.getValueAt(row,0)).getVolume();
       check(descending ? volume<=previous : volume>=previous, "Volume row order " + row + (descending?" descending":" ascending"));
       previous = volume;
+    }
+  }
+  private void verifyVolumeControls(Component component) {
+    if (component instanceof JMenuItem && "Volume".equals(((JMenuItem)component).getText())) {
+      JMenuItem item = (JMenuItem)component;
+      check(item.isEnabled(),"Volume menu control is enabled");
+      check(item.getAction()!=null,"Volume menu control has an action");
+    }
+    if (component instanceof JMenu) {
+      for (Component child : ((JMenu)component).getMenuComponents()) verifyVolumeControls(child);
+    } else if (component instanceof Container) {
+      for (Component child : ((Container)component).getComponents()) verifyVolumeControls(child);
     }
   }
   private int hasMenuItem(Component component, String text) {

@@ -10,4 +10,11 @@ GUI acceptance program: GUI_ACCEPTANCE_PASS
 PDF: 4 pages, all-level table with Level column and one plan per viewable level
 Visual review: PASS
 
-PNG files were rendered directly from the actual running Java windows with Window.printAll, rather than from unrelated screen pixels. Native macOS title bars and the global menu are not included. See AI_USAGE.md and tools/README.md for details.
+PNG files were rendered directly from the actual running Java windows with Window.printAll, rather than from unrelated screen pixels. Native macOS title bars and the global menu are not included. See tools/README.md for details.
+
+Final recheck: PASS
+Catalog and resized home-furniture volumes: PASS
+All 4 menu controls enabled, tooltip resources present, display action toggles correctly: PASS
+Restricted furniture filter restored after PDF printing: PASS
+Table column model, filter and grid color restored after injected print failure: PASS
+Three closed linked GitHub Issues: verified

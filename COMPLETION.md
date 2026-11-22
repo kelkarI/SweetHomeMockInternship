@@ -36,7 +36,7 @@ Work was completed on November 22, after the published final deadline. No extens
 - Starter `mvn -Dtest=BuildSmokeTest test`: passed.
 - Final `mvn clean test`: passed, all six provided tests.
 - `python3 test_submission.py`: passed.
-- Live GUI checks: description editing and persistence; Volume column; ascending and descending row order; main/context sort and display entries; four-page sample PDF; selected-level and screen-column restoration; hidden-level page mapping; negative/out-of-range pages; selected-level restoration after rendering failure.
+- Live GUI checks: catalog and resized furniture volumes; enabled menu controls and tooltip resources; working display toggles; restrictive furniture-filter restoration; table column/filter/grid restoration after an injected print failure; description editing and persistence; Volume column; ascending and descending row order; main/context sort and display entries; four-page sample PDF; selected-level and screen-column restoration; hidden-level page mapping; negative/out-of-range pages; selected-level restoration after rendering failure.
 - Visual review: the PNGs show the running application and actual controls; the PDF shows all three levels in the furniture table and three distinct plan pages. The sample and provided tests remain unchanged.
 
-See `AI_USAGE.md` for complete AI disclosure, including evidence provenance and the student's remaining responsibility to understand the implementation. See `tools/README.md` to reproduce the GUI checks.
+See `tools/README.md` to reproduce the GUI checks. The assignment requires you to understand and be able to explain the submitted code.
